@@ -2,8 +2,8 @@
 
 3d printer
 
-Create an input file named "input.3d". Draw each level of the structure you
-want printed with digits corresponding to which slot to place. Use a "." if you
+Create an input file in which you draw each level of the structure you want
+printed with digits corresponding to which slot to place. Use a "." if you
 don't want a block to be placed there. Separate each level with a blank line.
 
 For example, if the turtle has cobblestone in slot 1 and sand in slot 2,
@@ -30,11 +30,13 @@ this file "prints" a pyramid that only has sand visible:
 --
 
 Place the turtle in the top left corner of the first level, add fuel and
-building materials, then run the program.
+building materials, then run this program with path to the input file as the
+argument.
 
 --]]
 
-file = fs.open("input.3d", "r")
+args = { ... }
+file = fs.open(args[1], "r")
 if file
 then
   lines = 0
@@ -78,5 +80,5 @@ then
 
   file.close()
 else
-  print("error: 'input.3d' input file not found")
+  print("error: input file not found")
 end
