@@ -21,9 +21,13 @@ function forward (blockName)
         return false
       end
     else
-      -- no block below, backtrack
-      turtle.back()
-      return false
+      -- no block below
+      if not down(blockName) then
+        -- backtrack
+        turtle.back()
+        return false
+      end
+      return true
     end
   else
     -- obstructed
@@ -98,7 +102,7 @@ function down (blockName)
   end
 end
 
-directions = {up, forward, right, left, down}
+directions = {up, down, forward, right, left}
 
 while true do
   found = false
