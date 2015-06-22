@@ -31,7 +31,7 @@ function forward (blockName)
     end
   else
     -- obstructed
-    return false
+    return up(blockName)
   end
 end
 
