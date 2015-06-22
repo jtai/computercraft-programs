@@ -10,15 +10,15 @@ S S S S S
 S   C   S
 S S T S S
 H H   H H
-    S
+. . S . .
 
 Level 2:
 
 S S S S S
 S W C L S
 S S S S S
-
-
+. . . . .
+. . . . .
 
 S = Stone (or other non-cobblestone, lava-proof block)
 C = Cobblestone
@@ -26,6 +26,7 @@ H = Chest
 T = Mining Turtle
 W = Water
 L = Lava
+. = No block
 
 Equip the turtle with a block of coal in any position, then run this program.
 
