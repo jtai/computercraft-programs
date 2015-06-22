@@ -67,7 +67,38 @@ function up (blockName)
   end
 end
 
-directions = {up, forward, right, left}
+function down (blockName)
+  if turtle.down() then
+    turtle.turnLeft()
+    turtle.turnLeft()
+    local success, data = turtle.inspect()
+    if success then
+      if data.name == blockName then
+        -- found the path
+        turtle.turnRight()
+        turtle.turnRight()
+        return true
+      else
+        -- backtrack
+        turtle.turnRight()
+        turtle.turnRight()
+        turtle.up()
+        return false
+      end
+    else
+      -- no block, backtrack
+      turtle.turnRight()
+      turtle.turnRight()
+      turtle.up()
+      return false
+    end
+  else
+    -- obstructed
+    return false
+  end
+end
+
+directions = {up, forward, right, left, down}
 
 while true do
   found = false
