@@ -67,18 +67,20 @@ function up (blockName)
   end
 end
 
-blockName = "minecraft:stained_hardened_clay"
+directions = {up, forward, right, left}
 
 while true do
-  -- test up first since it doesn't require a move
-  if not up(blockName) then
-    if not forward(blockName) then
-      if not right(blockName) then
-        if not left(blockName) then
-          -- no valid moves, must be at end of maze
-          break
-        end
-      end
+  found = false
+
+  for i, direction in pairs(directions) do
+    if direction("minecraft:stained_hardened_clay") then
+      found = true
+      break
     end
+  end
+
+  -- no valid moves, must be at end of maze
+  if not found then
+    break
   end
 end
