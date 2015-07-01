@@ -35,17 +35,31 @@ argument.
 
 --]]
 
+-- takes a file handle, yields each level of the file as a two dimensional array
+function levelIter (h)
+  local rows = {}
+  local line = h.readLine()
+  if not line then return nil end
+  while line and not (string.len(line) == 0) do
+    local row = {}
+    for i = 1, string.len(line) do
+      table.insert(row, string.sub(line, i, i))
+    end
+    table.insert(rows, row)
+    line = h.readLine()
+  end
+  return rows
+end
+
+-- main program
 args = { ... }
 file = fs.open(args[1], "r")
-if file
-then
-  lines = 0
-  line = file.readLine()
-  while line do
-    if not (string.len(line) == 0) then
-      for i = 1, string.len(line) do
+if file then
+  for level in levelIter, file do
+    for i = 1, table.getn(level) do
+      for j = 1, table.getn(level[i]) do
         -- read character and place corresponding block from slot
-        char = string.sub(line, i, i)
+        char = level[i][j]
         if not (char == ".") then
           turtle.select(tonumber(char))
           turtle.place()
@@ -58,26 +72,20 @@ then
       end
 
       -- move back to left
+      turtle.back()
       turtle.turnLeft()
-      for i = 1, string.len(line) do
+      for j = 1, table.getn(level[i]) do
         turtle.forward()
       end
       turtle.turnRight()
-      turtle.back()
-
-      lines = lines + 1
-    else
-      -- blank line means next level
-      turtle.up()
-      for i = 1, lines do
-        turtle.forward()
-      end
-
-      lines = 0
     end
-    line = file.readLine()
-  end
 
+    -- reset to top left corner position on next level
+    turtle.up()
+    for i = 1, table.getn(level) do
+      turtle.forward()
+    end
+  end
   file.close()
 else
   print("error: input file not found")
