@@ -35,10 +35,10 @@ argument.
 
 --]]
 
--- takes a file handle, yields each level of the file as a two dimensional array
-function levelIter (h)
+-- Takes a file handle, yields each level of the file as a two dimensional array
+function levelIter (file)
   local rows = {}
-  local line = h.readLine()
+  local line = file.readLine()
   if not line then return nil end
   while line and not (string.len(line) == 0) do
     local row = {}
@@ -46,16 +46,38 @@ function levelIter (h)
       table.insert(row, string.sub(line, i, i))
     end
     table.insert(rows, row)
-    line = h.readLine()
+    line = file.readLine()
   end
   return rows
 end
 
--- main program
+-- Inverts rows and columns, i.e., flips a two dimensional array across its
+-- diagonal. Assumes uniform row length.
+function flipLevel (level)
+  local rows = {}
+  for i = 1, table.getn(level[1]) do
+    table.insert(rows, {})
+  end
+  for i = 1, table.getn(level) do
+    for j = 1, table.getn(level[i]) do
+      rows[j][i] = level[i][j]
+    end
+  end
+  return rows
+end
+
+-- Main program
 args = { ... }
 file = fs.open(args[1], "r")
 if file then
   for level in levelIter, file do
+    -- Files are read row by row, but it's slow to print in rows because turtles
+    -- can't move sideways directly (it takes 3 movements: right, forward, right).
+    -- It's faster to print in columns because turtles can move back with a single
+    -- movement. Here we flip the row-oriented level to be column-oriented so it
+    -- will be correct when we print in columns.
+    level = flipLevel(level)
+
     for i = 1, table.getn(level) do
       for j = 1, table.getn(level[i]) do
         -- read character and place corresponding block from slot
@@ -65,26 +87,26 @@ if file then
           turtle.place()
         end
 
-        -- move right
-        turtle.turnRight()
-        turtle.forward()
-        turtle.turnLeft()
+        -- move back
+        turtle.back()
       end
 
-      -- move back to left
-      turtle.back()
+      -- move right one column, and return to the top row
+      turtle.turnRight()
+      turtle.forward()
       turtle.turnLeft()
       for j = 1, table.getn(level[i]) do
         turtle.forward()
       end
-      turtle.turnRight()
     end
 
     -- reset to top left corner position on next level
     turtle.up()
+    turtle.turnLeft()
     for i = 1, table.getn(level) do
       turtle.forward()
     end
+    turtle.turnRight()
   end
   file.close()
 else
